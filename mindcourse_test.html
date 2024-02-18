@@ -1,0 +1,110 @@
+---1
+SELECT 
+    MIN(replacement_cost) AS lowest_replacement_cost
+FROM 
+    (SELECT DISTINCT replacement_cost FROM films) AS distinct_costs;
+---2
+SELECT 
+    CASE 
+        WHEN replacement_cost BETWEEN 9.99 AND 19.99 THEN 'low'
+        WHEN replacement_cost BETWEEN 20.00 AND 24.99 THEN 'medium'
+        WHEN replacement_cost BETWEEN 25.00 AND 29.99 THEN 'high'
+        ELSE 'other'
+    END AS cost_range,
+    COUNT(*) AS num_films
+FROM 
+    films
+GROUP BY 
+    cost_range;
+---3
+SELECT 
+    films.title AS film_title, 
+    films.length AS length, 
+    categories.name AS category_name
+FROM 
+    films
+JOIN 
+    film_categories ON films.film_id = film_categories.film_id
+JOIN 
+    categories ON film_categories.category_id = categories.category_id
+WHERE 
+    categories.name IN ('Drama', 'Sports')
+ORDER BY 
+    films.length DESC
+LIMIT 1;
+---4
+SELECT 
+    films.title AS film_title, 
+    films.length AS length, 
+    categories.name AS category_name
+FROM 
+    films
+JOIN 
+    film_categories ON films.film_id = film_categories.film_id
+JOIN 
+    categories ON film_categories.category_id = categories.category_id
+WHERE 
+    categories.name IN ('Drama', 'Sports')
+ORDER BY 
+    films.length DESC
+LIMIT 1;
+---5
+SELECT 
+    actors.first_name AS first_name, 
+    actors.last_name AS last_name, 
+    COUNT(*) AS num_films
+FROM 
+    actors
+JOIN 
+    film_actor ON actors.actor_id = film_actor.actor_id
+GROUP BY 
+    actors.actor_id
+ORDER BY 
+    num_films DESC
+LIMIT 1;
+---6
+SELECT 
+    COUNT(address.address_id) AS num_addresses
+FROM 
+    address
+LEFT JOIN 
+    customer ON address.address_id = customer.address_id
+WHERE 
+    customer.customer_id IS NULL;
+---7
+SELECT 
+    city.city AS city_name,
+    SUM(payment.amount) AS total_revenue
+FROM 
+    city
+JOIN 
+    address ON city.city_id = address.city_id
+JOIN 
+    customer ON address.address_id = customer.address_id
+JOIN 
+    payment ON customer.customer_id = payment.customer_id
+GROUP BY 
+    city.city_id
+ORDER BY 
+    total_revenue DESC
+LIMIT 1;
+---8
+SELECT 
+    CONCAT(city.city, ', ', country.country) AS city_country,
+    SUM(payment.amount) AS total_revenue
+FROM 
+    city
+JOIN 
+    country ON city.country_id = country.country_id
+JOIN 
+    address ON city.city_id = address.city_id
+JOIN 
+    customer ON address.address_id = customer.address_id
+JOIN 
+    payment ON customer.customer_id = payment.customer_id
+GROUP BY 
+    city_city, country_country
+ORDER BY 
+    total_revenue DESC
+LIMIT 1;
+    
